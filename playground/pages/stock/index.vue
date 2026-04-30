@@ -1,36 +1,37 @@
 <template>
-  <div>
-    <h2>추천 주식 종목</h2>
+  <div class="p-6">
+    <h1 class="text-2xl font-bold mb-4">
+      국내 주식 추천 서비스 여기까지..오늘은
+    </h1>
 
-    <div v-if="pending">
-      로딩 중입니다...
+    <div
+      v-if="pending"
+      class="animate-pulse"
+    >
+      데이터 로딩 중...
     </div>
 
     <div
-      v-else-if="error"
-      class="text-red-500"
+      v-else-if="data"
+      class="border p-4 rounded-lg shadow-sm w-64"
     >
-      데이터를 불러오는 중 에러가 발생했습니다.
+      <h2 class="text-lg font-semibold">
+        {{ data.name }}
+      </h2>
+      <p class="text-3xl font-mono my-2">
+        {{ Number(data.price).toLocaleString() }}원
+      </p>
+      <p :class="Number(data.change) > 0 ? 'text-red-500' : 'text-blue-500'">
+        전일대비: {{ data.change }}
+      </p>
     </div>
-
-    <ul v-else-if="data && data.success">
-      <li
-        v-for="stock in data.data"
-        :key="stock.symbol"
-        class="py-2"
-      >
-        <strong>{{ stock.symbol }}</strong> - {{ stock.name }}:
-        {{ stock.price.toLocaleString() }} {{ stock.currency }}
-      </li>
-    </ul>
   </div>
 </template>
 
 <script setup lang="ts">
 import { stockService } from '~/services/stock'
 
-// Nuxt 3의 useFetch와 TypeScript를 결합한 방식
-const { data, pending, error } = await useAsyncData('stockData', () =>
-  stockService.getRecommendStocks(),
+const { data, pending } = await useAsyncData('currentStock', () =>
+  stockService.getStockPrice(),
 )
 </script>
