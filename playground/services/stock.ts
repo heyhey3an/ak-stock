@@ -1,9 +1,13 @@
 // services/stockService.ts
-import type { StockApiResponse } from '~/server/api/stock'
+export interface StockSummary {
+  success: boolean
+  name: string
+  price: string
+  change: string
+}
 
 export const stockService = {
-  // 추천 주식 데이터를 가져오는 비동기 함수
-  async getRecommendStocks(): Promise<StockApiResponse> {
-    return await $fetch<StockApiResponse>('/api/stocks')
+  async getStockPrice(): Promise<StockSummary> {
+    return await $fetch<StockSummary>('/api/stocks')
   },
 }
